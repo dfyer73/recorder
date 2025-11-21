@@ -9,6 +9,7 @@ import { useMediaDevices } from 'contexts/mediaDevices';
 import { usePictureInPicture } from 'contexts/pictureInPicture';
 import { useStreams } from 'contexts/streams';
 import useKeyboardShorcut from 'hooks/useKeyboardShortcut';
+import { useFeatureSupport } from 'contexts/featureSupport';
 
 import styles from './App.module.css';
 
@@ -22,6 +23,7 @@ const App = () => {
     setCameraEnabled,
     setMicrophoneEnabled,
   } = useMediaDevices();
+  const { isMobile } = useFeatureSupport();
 
   useKeyboardShorcut('e', () => setCameraEnabled(!cameraEnabled));
   useKeyboardShorcut('d', () => setMicrophoneEnabled(!microphoneEnabled));
@@ -35,7 +37,7 @@ const App = () => {
     >
       <main className={styles.main}>
         <VideoStreams />
-        <LayoutSwitcher />
+        {!isMobile && <LayoutSwitcher />}
       </main>
       <Footer />
       {pipWindow && <PiPWindow pipWindow={pipWindow} />}

@@ -35,9 +35,12 @@ const detectMobile = () => {
 
 const detectFeatures = (): { isMobile: boolean; features: SupportedFeatures } => {
   const isMobile = detectMobile();
+  const hasDisplayMedia = (
+    'mediaDevices' in navigator && 'getDisplayMedia' in navigator.mediaDevices
+  ) || 'getDisplayMedia' in (navigator as unknown as Record<string, unknown>);
   const features: SupportedFeatures = {
     getUserMedia: 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices,
-    getDisplayMedia: 'mediaDevices' in navigator && 'getDisplayMedia' in navigator.mediaDevices,
+    getDisplayMedia: hasDisplayMedia,
     mediaRecorder: 'MediaRecorder' in window,
     trackProcessor: 'MediaStreamTrackProcessor' in window,
     trackGenerator: 'MediaStreamTrackGenerator' in window,
@@ -48,16 +51,9 @@ const detectFeatures = (): { isMobile: boolean; features: SupportedFeatures } =>
 };
 
 export const FeatureSupportProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [features, setFeatures] = useState<SupportedFeatures>(() => ({
-    getUserMedia: false,
-    getDisplayMedia: false,
-    mediaRecorder: false,
-    trackProcessor: false,
-    trackGenerator: false,
-    pictureInPictureWindow: false,
-    offscreenCanvas: false,
-  }));
+  const initial = detectFeatures();
+  const [isMobile, setIsMobile] = useState(initial.isMobile);
+  const [features, setFeatures] = useState<SupportedFeatures>(initial.features);
 
   const mobileWhitelist = useMemo<(keyof SupportedFeatures)[]>(
     () => ['getUserMedia', 'mediaRecorder', 'offscreenCanvas'],
