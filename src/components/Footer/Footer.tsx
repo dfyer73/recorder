@@ -1,7 +1,6 @@
 import CameraSelect from 'components/CameraSelect';
 import MainRecordButton from 'components/MainRecordButton';
 import MicrophoneSelect from 'components/MicrophoneSelect';
-import ShapeSelect from 'components/ShapeSelect';
 import TeleprompterSelect from 'components/TeleprompterSelect';
 import { useFeatureSupport } from 'contexts/featureSupport';
 
@@ -15,7 +14,6 @@ const Footer = () => {
       <MainRecordButton />
       <div className={styles.devices}>
         <TeleprompterSelect />
-        <ShapeSelect />
         <MicrophoneSelect />
         {!isMobile && <CameraSelect />}
       </div>

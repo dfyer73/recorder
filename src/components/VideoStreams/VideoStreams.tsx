@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { useState } from 'react';
-import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import CameraswitchIcon from '@mui/icons-material/Cameraswitch';
 
 import Placeholder from 'components/Placeholder';
 import { useLayout } from 'contexts/layout';
@@ -126,14 +127,12 @@ const VideoStreams = () => {
         )}
 
       {isMobile && (layout === 'cameraOnly' || layout === 'screenAndCamera') && (
-        <Button
-          variant="contained"
-          size="small"
+        <IconButton
           onClick={switchCamera}
-          style={{ position: 'fixed', bottom: 16, left: 16, zIndex: 1000 }}
+          style={{ position: 'fixed', top: 12, right: 12, zIndex: 1000 }}
         >
-          Switch Camera
-        </Button>
+          <CameraswitchIcon />
+        </IconButton>
       )}
     </>
   );

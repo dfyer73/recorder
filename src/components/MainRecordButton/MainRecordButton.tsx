@@ -6,6 +6,7 @@ import { useLayout } from 'contexts/layout';
 import { usePictureInPicture } from 'contexts/pictureInPicture';
 import { useRecording } from 'contexts/recording';
 import { useScreenshare } from 'contexts/screenshare';
+import { useFeatureSupport } from 'contexts/featureSupport';
 
 import styles from './MainRecordButton.module.css';
 
@@ -15,6 +16,8 @@ const MainRecordButton = () => {
   const { isRecording } = useRecording();
   const { pipWindow, requestPipWindow } = usePictureInPicture();
   const { startScreenshare } = useScreenshare();
+  const { isMobile, isSupported } = useFeatureSupport();
+  const { stopRecording, startRecording } = useRecording();
 
   return (
     <RecordButton
@@ -25,13 +28,26 @@ const MainRecordButton = () => {
           return;
         }
         if (isRecording) {
-          pipWindow?.close();
+          if (pipWindow) {
+            pipWindow.close();
+          } else {
+            stopRecording();
+          }
         } else if (pipWindow) {
           setCountingDown(true);
         } else if (layout === 'cameraOnly') {
-          await requestPipWindow();
+          if (!isMobile && isSupported('pictureInPictureWindow')) {
+            await requestPipWindow();
+          } else {
+            startRecording();
+          }
         } else {
-          await startScreenshare();
+          const canScreenshare = isSupported('getDisplayMedia');
+          if (!isMobile && isSupported('pictureInPictureWindow') && canScreenshare) {
+            await startScreenshare();
+          } else {
+            startRecording();
+          }
         }
       }}
     />
