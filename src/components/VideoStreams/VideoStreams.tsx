@@ -1,9 +1,12 @@
 import cx from 'classnames';
 import { useState } from 'react';
+import Button from '@mui/material/Button';
 
 import Placeholder from 'components/Placeholder';
 import { useLayout } from 'contexts/layout';
 import { useStreams } from 'contexts/streams';
+import { useMediaDevices } from 'contexts/mediaDevices';
+import { useFeatureSupport } from 'contexts/featureSupport';
 import { useCameraShape } from 'contexts/cameraShape';
 import useVideoSource from 'hooks/useVideoSource';
 import {
@@ -24,12 +27,32 @@ type ScreenshareSize = {
 
 const VideoStreams = () => {
   const { layout } = useLayout();
-  const { cameraStream, screenshareStream } = useStreams();
+  const { cameraStream, screenshareStream, setCameraStream } = useStreams();
   const updateCameraSource = useVideoSource(cameraStream);
   const updateScreenshareSource = useVideoSource(screenshareStream);
   const [screenshareSize, setScreenshareSize] =
     useState<ScreenshareSize | null>(null);
   const { isCircle } = useCameraShape();
+  const { isMobile } = useFeatureSupport();
+  const { setCameraEnabled } = useMediaDevices();
+
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
+
+  const switchCamera = async () => {
+    const nextFacing = facingMode === 'user' ? 'environment' : 'user';
+    cameraStream?.getTracks().forEach((t) => t.stop());
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: nextFacing },
+        audio: false,
+      });
+      setCameraEnabled(true);
+      setCameraStream(stream);
+      setFacingMode(nextFacing);
+    } catch (e) {
+      // ignore
+    }
+  };
 
   if (!screenshareStream && screenshareSize) {
     setScreenshareSize(null);
@@ -101,6 +124,17 @@ const VideoStreams = () => {
             muted
           />
         )}
+
+      {isMobile && (layout === 'cameraOnly' || layout === 'screenAndCamera') && (
+        <Button
+          variant="contained"
+          size="small"
+          onClick={switchCamera}
+          style={{ position: 'fixed', bottom: 16, left: 16, zIndex: 1000 }}
+        >
+          Switch Camera
+        </Button>
+      )}
     </>
   );
 };

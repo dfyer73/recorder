@@ -3,10 +3,12 @@ import MainRecordButton from 'components/MainRecordButton';
 import MicrophoneSelect from 'components/MicrophoneSelect';
 import ShapeSelect from 'components/ShapeSelect';
 import TeleprompterSelect from 'components/TeleprompterSelect';
+import { useFeatureSupport } from 'contexts/featureSupport';
 
 import styles from './Footer.module.css';
 
 const Footer = () => {
+  const { isMobile } = useFeatureSupport();
   return (
     <footer className={styles.root}>
       <div>&nbsp;</div>
@@ -15,7 +17,7 @@ const Footer = () => {
         <TeleprompterSelect />
         <ShapeSelect />
         <MicrophoneSelect />
-        <CameraSelect />
+        {!isMobile && <CameraSelect />}
       </div>
     </footer>
   );
