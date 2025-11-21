@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 
 import { useRecording } from './recording';
+import { useFeatureSupport } from './featureSupport';
 
 type PictureInPictureContextType = {
   pipWindow: Window | null;
@@ -20,8 +21,12 @@ export const PictureInPictureProvider = ({
 }: PictureInPictureProviderProps) => {
   const { stopRecording } = useRecording();
   const [pipWindow, setPipWindow] = useState<Window | null>(null);
+  const { isSupported } = useFeatureSupport();
 
   const requestPipWindow = async () => {
+    if (!isSupported('pictureInPictureWindow')) {
+      throw new Error('Picture-in-Picture not supported');
+    }
     const pipWindow = await window.documentPictureInPicture.requestWindow({
       width: 300,
       height: 300,

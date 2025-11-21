@@ -12,6 +12,7 @@ import {
   Plus,
   RotateCcw,
 } from 'lucide-react';
+
 import styles from './Teleprompter.module.css';
 
 const DEFAULT_SPEED = 0.2;

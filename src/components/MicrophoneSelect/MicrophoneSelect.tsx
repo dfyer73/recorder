@@ -1,9 +1,11 @@
 import MicIcon from '@mui/icons-material/MicNone';
 import MicOffIcon from '@mui/icons-material/MicOffOutlined';
 import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
 
 import DeviceSelect from 'components/DeviceSelect';
 import { useMediaDevices } from 'contexts/mediaDevices';
+import { useFeatureSupport } from 'contexts/featureSupport';
 
 const MicrophoneSelect = () => {
   const {
@@ -13,18 +15,29 @@ const MicrophoneSelect = () => {
     setPreferredMicrophone,
     setMicrophoneEnabled,
   } = useMediaDevices();
+  const { isSupported } = useFeatureSupport();
+  const mediaSupported = isSupported('getUserMedia');
 
   return (
     <DeviceSelect
       startAdornment={
-        microphones.length && microphoneEnabled ? (
-          <MicIcon onClick={() => setMicrophoneEnabled(false)} />
+        mediaSupported ? (
+          microphones.length && microphoneEnabled ? (
+            <MicIcon onClick={() => setMicrophoneEnabled(false)} />
+          ) : (
+            <MicOffIcon onClick={() => setMicrophoneEnabled(true)} />
+          )
         ) : (
-          <MicOffIcon onClick={() => setMicrophoneEnabled(true)} />
+          <Tooltip title="Microphone access not supported on this device">
+            <span>
+              <MicOffIcon />
+            </span>
+          </Tooltip>
         )
       }
       value={microphoneId}
       onChange={(event) => setPreferredMicrophone(event.target.value)}
+      disabled={!mediaSupported}
     >
       {microphones.length ? (
         microphones.map((microphone) => (

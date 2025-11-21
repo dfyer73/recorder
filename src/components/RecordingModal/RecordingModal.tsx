@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import Button from '@mui/material/Button';
+
 import styles from './RecordingModal.module.css';
 
 type RecordingModalProps = {

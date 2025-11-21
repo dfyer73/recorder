@@ -1,7 +1,9 @@
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Tooltip from '@mui/material/Tooltip';
 
 import { Layout, useLayout } from 'contexts/layout';
+import { useFeatureSupport } from 'contexts/featureSupport';
 
 import CameraOnlyIcon from './icons/CameraOnlyIcon';
 import ScreenAndCameraIcon from './icons/ScreenAndCameraIcon';
@@ -11,6 +13,8 @@ import styles from './LayoutSwitcher.module.css';
 
 const LayoutSwitcher = () => {
   const { layout, setLayout } = useLayout();
+  const { isSupported } = useFeatureSupport();
+  const screenshareSupported = isSupported('getDisplayMedia');
 
   return (
     <ToggleButtonGroup
@@ -23,14 +27,22 @@ const LayoutSwitcher = () => {
         }
       }}
     >
-      <ToggleButton value="screenOnly">
-        <ScreenOnlyIcon />
-        Screen only
-      </ToggleButton>
-      <ToggleButton value="screenAndCamera">
-        <ScreenAndCameraIcon />
-        Screen and camera
-      </ToggleButton>
+      <Tooltip title={screenshareSupported ? '' : 'Screenshare not supported on this device'}>
+        <span>
+          <ToggleButton value="screenOnly" disabled={!screenshareSupported}>
+            <ScreenOnlyIcon />
+            Screen only
+          </ToggleButton>
+        </span>
+      </Tooltip>
+      <Tooltip title={screenshareSupported ? '' : 'Screenshare not supported on this device'}>
+        <span>
+          <ToggleButton value="screenAndCamera" disabled={!screenshareSupported}>
+            <ScreenAndCameraIcon />
+            Screen and camera
+          </ToggleButton>
+        </span>
+      </Tooltip>
       <ToggleButton value="cameraOnly">
         <CameraOnlyIcon />
         Camera only

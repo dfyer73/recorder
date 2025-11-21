@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
+
+import { useFeatureSupport } from './featureSupport';
 
 export type Layout = 'screenOnly' | 'screenAndCamera' | 'cameraOnly';
 
@@ -14,7 +16,12 @@ type LayoutProviderProps = {
 };
 
 export const LayoutProvider = ({ children }: LayoutProviderProps) => {
-  const [layout, setLayout] = useState<Layout>('screenAndCamera');
+  const { isSupported } = useFeatureSupport();
+  const initialLayout: Layout = useMemo(
+    () => (isSupported('getDisplayMedia') ? 'screenAndCamera' : 'cameraOnly'),
+    [isSupported],
+  );
+  const [layout, setLayout] = useState<Layout>(initialLayout);
 
   return (
     <LayoutContext.Provider value={{ layout, setLayout }}>

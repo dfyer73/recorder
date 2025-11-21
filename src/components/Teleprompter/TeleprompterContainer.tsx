@@ -1,6 +1,7 @@
 'use client';
 
 import { Teleprompter } from './Teleprompter';
+
 import styles from './TeleprompterContainer.module.css';
 
 interface TeleprompterContainerProps {

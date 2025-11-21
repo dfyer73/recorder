@@ -18,6 +18,20 @@ export const composeStreams = (
   const microphoneTrack = microphoneStream?.getAudioTracks()[0];
   const screenshareTrack = screenshareStream?.getVideoTracks()[0];
 
+  const canCompose =
+    'MediaStreamTrackProcessor' in window &&
+    'MediaStreamTrackGenerator' in window &&
+    'OffscreenCanvas' in window;
+
+  if (!canCompose) {
+    const baseStream = screenshareStream ?? cameraStream;
+    const recordingStream = new MediaStream(baseStream ? [baseStream.getVideoTracks()[0]].filter(Boolean) as MediaStreamTrack[] : []);
+    if (microphoneTrack) {
+      recordingStream.addTrack(microphoneTrack);
+    }
+    return recordingStream;
+  }
+
   const screenshareProcessor =
     screenshareTrack &&
     new MediaStreamTrackProcessor({

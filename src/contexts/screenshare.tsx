@@ -2,6 +2,7 @@ import { createContext, useContext, useRef } from 'react';
 
 import { useLayout } from './layout';
 import { usePictureInPicture } from './pictureInPicture';
+import { useFeatureSupport } from './featureSupport';
 import { useRecording } from './recording';
 import { useStreams } from './streams';
 
@@ -31,8 +32,12 @@ export const ScreenshareProvider = ({ children }: ScreenshareProviderProps) => {
   const { pipWindow, requestPipWindow } = usePictureInPicture();
   const pipWindowRef = useRef(pipWindow);
   pipWindowRef.current = pipWindow;
+  const { isSupported } = useFeatureSupport();
 
   const startScreenshare = async () => {
+    if (!isSupported('getDisplayMedia')) {
+      return;
+    }
     if (!pipWindowRef.current) {
       pipWindowRef.current = await requestPipWindow();
     }

@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
+
 import DeviceSelect from 'components/DeviceSelect';
 import { TeleprompterIcon } from 'components/ShapeSelect/icons/TeleprompterIcon';
-import { useState } from 'react';
 import Teleprompter from 'components/Teleprompter';
 
 const TeleprompterSelect = () => {
