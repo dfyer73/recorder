@@ -69,10 +69,27 @@ export const MediaDevicesProvider = ({
     requestPermissions().then(updateDevices);
 
     navigator.mediaDevices.addEventListener('devicechange', updateDevices);
+    const handleVisibility = async () => {
+      if (document.visibilityState === 'visible') {
+        if (cameraEnabled) {
+          await requestCamera(cameraId, true);
+        }
+        if (microphoneEnabled) {
+          await requestMicrophone(microphoneId, true);
+        }
+      }
+    };
+    const handlePageShow = async () => {
+      await handleVisibility();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('pageshow', handlePageShow);
     return () => {
       navigator.mediaDevices.removeEventListener('devicechange', updateDevices);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('pageshow', handlePageShow);
     };
-  }, [requestCamera, requestMicrophone]);
+  }, [requestCamera, requestMicrophone, cameraEnabled, cameraId, microphoneEnabled, microphoneId]);
 
   const setPreferredCamera = async (deviceId: string) => {
     devicePreference.update({ cameraId: deviceId });
