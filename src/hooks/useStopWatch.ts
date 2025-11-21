@@ -34,6 +34,13 @@ const useStopWatch = () => {
       setStartTime(0);
       setLastTime(0);
     },
+
+    reset: () => {
+      cancelAnimationFrame(requestIdRef.current);
+      setPreviousDuration(0);
+      setStartTime(0);
+      setLastTime(0);
+    },
   };
 };
 

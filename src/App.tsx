@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -43,12 +43,16 @@ const App = () => {
   } = useRecording();
   const stopWatch = useStopWatch();
 
+  const wasRecordingRef = useRef(false);
+
   useEffect(() => {
-    if (isRecording) {
+    if (isRecording && !wasRecordingRef.current) {
+      stopWatch.reset();
       stopWatch.start();
-    } else {
+    } else if (!isRecording && wasRecordingRef.current) {
       stopWatch.stop();
     }
+    wasRecordingRef.current = isRecording;
   }, [isRecording, stopWatch]);
 
   useKeyboardShorcut('e', () => setCameraEnabled(!cameraEnabled));
@@ -82,7 +86,7 @@ const App = () => {
               right: 16,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
               background:
                 'linear-gradient(to top, rgb(0 0 0 / 40%), rgb(0 0 0 / 0%) 120px)',
               padding: 16,
@@ -90,7 +94,7 @@ const App = () => {
               borderRadius: 8,
             }}
           >
-            <Typography variant="subtitle2" style={{ color: 'white', marginRight: 12 }}>
+            <Typography variant="subtitle2" style={{ color: 'white' }}>
               {formatDuration(stopWatch.elapsed)}
             </Typography>
             <div style={{ display: 'flex', gap: 8 }}>
@@ -115,7 +119,7 @@ const App = () => {
                   color={isPaused ? 'default' : 'primary'}
                   onClick={stopRecording}
                 >
-                  <StopIcon style={{ color: 'var(--mui-palette-primary-main)' }} />
+                  <StopIcon style={{ color: 'white' }} />
                 </IconButton>
               </Tooltip>
             </div>

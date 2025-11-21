@@ -47,8 +47,8 @@ const VideoStreams = () => {
         video: {
           facingMode: nextFacing,
           aspectRatio: 16 / 9,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
+          width: 1920,
+          height: 1080,
         },
         audio: false,
       });
