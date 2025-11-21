@@ -44,7 +44,12 @@ const VideoStreams = () => {
     cameraStream?.getTracks().forEach((t) => t.stop());
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: nextFacing },
+        video: {
+          facingMode: nextFacing,
+          aspectRatio: 16 / 9,
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+        },
         audio: false,
       });
       setCameraEnabled(true);

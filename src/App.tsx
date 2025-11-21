@@ -2,6 +2,7 @@ import cx from 'classnames';
 import { useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import PauseIcon from '@mui/icons-material/Pause';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import StopIcon from '@mui/icons-material/Stop';
@@ -17,6 +18,7 @@ import { useStreams } from 'contexts/streams';
 import useKeyboardShorcut from 'hooks/useKeyboardShortcut';
 import { useRecording } from 'contexts/recording';
 import useStopWatch from 'hooks/useStopWatch';
+import { formatDuration } from 'services/format/duration';
 import { useFeatureSupport } from 'contexts/featureSupport';
 
 import styles from './App.module.css';
@@ -88,6 +90,9 @@ const App = () => {
               borderRadius: 8,
             }}
           >
+            <Typography variant="subtitle2" style={{ color: 'white', marginRight: 12 }}>
+              {formatDuration(stopWatch.elapsed)}
+            </Typography>
             <div style={{ display: 'flex', gap: 8 }}>
               <Tooltip title={isPaused ? 'Record' : 'Pause'}>
                 <IconButton
@@ -110,7 +115,7 @@ const App = () => {
                   color={isPaused ? 'default' : 'primary'}
                   onClick={stopRecording}
                 >
-                  <StopIcon />
+                  <StopIcon style={{ color: 'var(--mui-palette-primary-main)' }} />
                 </IconButton>
               </Tooltip>
             </div>
